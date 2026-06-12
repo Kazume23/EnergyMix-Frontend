@@ -66,6 +66,7 @@ const copy = {
     start: 'Start:',
     end: 'End:',
     averageCleanEnergy: 'Average clean energy:',
+    optimalWindowMix: 'Optimal window mix',
   },
   pl: {
     loading: 'Ładowanie danych sieci...',
@@ -99,6 +100,7 @@ const copy = {
     start: 'Start:',
     end: 'Koniec:',
     averageCleanEnergy: 'Średni udział czystej energii:',
+    optimalWindowMix: 'Miks w optymalnym oknie',
   },
 }
 
@@ -108,8 +110,13 @@ const localeByLanguage: Record<Language, string> = {
 }
 
 const chargingDurationOptions = [1, 2, 3, 4, 5, 6]
+const cleanEnergySources = new Set(['biomass', 'nuclear', 'hydro', 'wind', 'solar'])
 const languageStorageKey = 'energyMixLanguage'
 const themeStorageKey = 'energyMixTheme'
+
+function isCleanEnergySource(fuel: string) {
+  return cleanEnergySources.has(fuel.toLowerCase())
+}
 
 function isLanguage(value: string | null): value is Language {
   return value === 'en' || value === 'pl'
@@ -304,44 +311,6 @@ function App() {
         <p>{text.intro}</p>
       </header>
 
-      <section className="task-rules" aria-label="Task rules">
-        <p>
-          <strong>{text.cleanEnergyRuleLabel}</strong> {text.cleanEnergyRule}
-        </p>
-        <p>
-          <strong>{text.chargingRuleLabel}</strong> {text.chargingRule}
-        </p>
-      </section>
-
-      <section className="daily-mix-grid">
-        {dailyEnergyMix.map((dayMix, dayIndex) => (
-          <article className="daily-mix-card" key={dayMix.date}>
-            <div className="card-header">
-              <div className="card-title-group">
-                <p className="day-label">{text.dayLabels[dayIndex]}</p>
-                <h2>{formatMixDate(dayMix.date, language)}</h2>
-              </div>
-              <span>
-                {dayMix.cleanEnergyPercentage}% {text.cleanEnergy}
-              </span>
-            </div>
-
-            <EnergyMixPieChart sources={dayMix.sources} />
-
-            <ul className="source-list">
-              {dayMix.sources.map((source) => (
-                <li key={source.fuel}>
-                  <span>
-                    {fuelLabels[language][source.fuel] ?? source.fuel}
-                  </span>
-                  <strong>{source.percentage}%</strong>
-                </li>
-              ))}
-            </ul>
-          </article>
-        ))}
-      </section>
-
       <section className="charging-section">
         <p className="eyebrow">{text.chargingEyebrow}</p>
         <h2>{text.chargingTitle}</h2>
@@ -399,21 +368,72 @@ function App() {
 
         {chargingWindow && (
           <div className="charging-result">
-            <p>
-              <strong>{text.start}</strong>{' '}
-              {formatWindowDate(chargingWindow.start, language)}
-            </p>
-            <p>
-              <strong>{text.end}</strong>{' '}
-              {formatWindowDate(chargingWindow.end, language)}
-            </p>
-            <p>
-              <strong>{text.averageCleanEnergy}</strong>{' '}
-              {chargingWindow.averageCleanEnergyPercentage}%
-            </p>
+            <div className="charging-result-details">
+              <p>
+                <strong>{text.start}</strong>{' '}
+                {formatWindowDate(chargingWindow.start, language)}
+              </p>
+              <p>
+                <strong>{text.end}</strong>{' '}
+                {formatWindowDate(chargingWindow.end, language)}
+              </p>
+              <p>
+                <strong>{text.averageCleanEnergy}</strong>{' '}
+                {chargingWindow.averageCleanEnergyPercentage}%
+              </p>
+            </div>
+
+            {chargingWindow.sources?.length > 0 && (
+              <div className="charging-result-chart">
+                <p className="result-chart-title">{text.optimalWindowMix}</p>
+                <EnergyMixPieChart sources={chargingWindow.sources} />
+              </div>
+            )}
           </div>
         )}
       </section>
+
+      <section className="task-rules" aria-label="Task rules">
+        <p>
+          <strong>{text.cleanEnergyRuleLabel}</strong> {text.cleanEnergyRule}
+        </p>
+        <p>
+          <strong>{text.chargingRuleLabel}</strong> {text.chargingRule}
+        </p>
+      </section>
+
+      <section className="daily-mix-grid">
+        {dailyEnergyMix.map((dayMix, dayIndex) => (
+          <article className="daily-mix-card" key={dayMix.date}>
+            <div className="card-header">
+              <div className="card-title-group">
+                <p className="day-label">{text.dayLabels[dayIndex]}</p>
+                <h2>{formatMixDate(dayMix.date, language)}</h2>
+              </div>
+              <span>
+                {dayMix.cleanEnergyPercentage}% {text.cleanEnergy}
+              </span>
+            </div>
+
+            <EnergyMixPieChart sources={dayMix.sources} />
+
+            <ul className="source-list">
+              {dayMix.sources.map((source) => (
+                <li
+                  className={isCleanEnergySource(source.fuel) ? 'clean-source' : undefined}
+                  key={source.fuel}
+                >
+                  <span>
+                    {fuelLabels[language][source.fuel] ?? source.fuel}
+                  </span>
+                  <strong>{source.percentage}%</strong>
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </section>
+
     </main>
   )
 }

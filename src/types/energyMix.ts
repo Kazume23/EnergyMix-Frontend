@@ -13,4 +13,5 @@ export type OptimalChargingWindow = {
   start: string
   end: string
   averageCleanEnergyPercentage: number
+  sources: EnergySourceShare[]
 }

@@ -10,6 +10,7 @@ The app consumes a backend API that aggregates data from the public Carbon Inten
 * Displays one pie chart per day with source percentages and clean energy share.
 * Labels each daily card with its relative day, so the three columns are easy to read.
 * Calculates the cleanest EV charging window for a selected duration from 1 to 6 full hours.
+* Displays the averaged generation mix for the selected optimal charging window.
 * Uses the task definition of clean energy: biomass, nuclear, hydro, wind, and solar.
 * Supports English and Polish UI language switching.
 * Supports light and dark mode.
@@ -36,7 +37,7 @@ Returns the averaged generation mix for today, tomorrow, and the day after tomor
 GET /api/carbon/optimal-charging-window?hours=3
 ```
 
-Returns the best charging window for the selected duration, including start time, end time, and average clean energy percentage.
+Returns the best charging window for the selected duration, including start time, end time, average clean energy percentage, and averaged source shares for that window.
 
 ## Environment Configuration
 
