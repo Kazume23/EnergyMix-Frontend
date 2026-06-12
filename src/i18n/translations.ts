@@ -51,6 +51,11 @@ export const resources = {
         averageCleanEnergy: 'Average clean energy:',
         optimalWindowMix: 'Optimal window mix',
       },
+      footer: {
+        author: 'Built by Jakub Witek',
+        github: 'GitHub',
+        githubAriaLabel: 'Open Jakub Witek GitHub profile',
+      },
       fuel: {
         biomass: 'Biomass',
         coal: 'Coal',
@@ -109,6 +114,11 @@ export const resources = {
         end: 'Koniec:',
         averageCleanEnergy: 'Średni udział czystej energii:',
         optimalWindowMix: 'Miks w optymalnym oknie',
+      },
+      footer: {
+        author: 'Autor: Jakub Witek',
+        github: 'GitHub',
+        githubAriaLabel: 'Otwórz profil GitHub Jakuba Witka',
       },
       fuel: {
         biomass: 'Biomass',

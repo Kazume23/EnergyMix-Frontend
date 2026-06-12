@@ -1,4 +1,4 @@
-import { Leaf } from 'lucide-react'
+import { ExternalLink, Leaf } from 'lucide-react'
 
 export function MoonIcon() {
   return (
@@ -47,6 +47,17 @@ export function LeafIcon() {
       className="source-leaf-icon"
       size={15}
       strokeWidth={2.1}
+      aria-hidden="true"
+    />
+  )
+}
+
+export function GitHubIcon() {
+  return (
+    <ExternalLink
+      className="footer-link-icon"
+      size={16}
+      strokeWidth={2}
       aria-hidden="true"
     />
   )
