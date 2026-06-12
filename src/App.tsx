@@ -54,6 +54,7 @@ const copy = {
     chargingRule:
       'calculated from half-hour forecast intervals across the next two days.',
     chargingRuleLabel: 'Charging window:',
+    dayLabels: ['Today', 'Tomorrow', 'Day after tomorrow'],
     cleanEnergy: 'clean energy',
     chargingEyebrow: 'EV charging',
     chargingTitle: 'Find the cleanest charging window',
@@ -86,6 +87,7 @@ const copy = {
     chargingRule:
       'liczone z półgodzinnych interwałów prognozy dla kolejnych dwóch dni.',
     chargingRuleLabel: 'Okno ładowania:',
+    dayLabels: ['Dzisiaj', 'Jutro', 'Pojutrze'],
     cleanEnergy: 'czystej energii',
     chargingEyebrow: 'Ładowanie EV',
     chargingTitle: 'Znajdź najczystsze okno ładowania',
@@ -169,20 +171,24 @@ function LanguageIcon() {
 }
 
 function formatMixDate(date: string, language: Language) {
-  return new Intl.DateTimeFormat(localeByLanguage[language], {
+  const formattedDate = new Intl.DateTimeFormat(localeByLanguage[language], {
     weekday: 'short',
     day: 'numeric',
     month: 'short',
   }).format(new Date(date))
+
+  return language === 'pl' ? formattedDate.replaceAll(',', '') : formattedDate
 }
 
 function formatWindowDate(date: string, language: Language) {
-  return new Intl.DateTimeFormat(localeByLanguage[language], {
+  const formattedDate = new Intl.DateTimeFormat(localeByLanguage[language], {
     day: 'numeric',
     month: 'short',
     hour: '2-digit',
     minute: '2-digit',
   }).format(new Date(date))
+
+  return language === 'pl' ? formattedDate.replaceAll(',', '') : formattedDate
 }
 
 function App() {
@@ -308,10 +314,13 @@ function App() {
       </section>
 
       <section className="daily-mix-grid">
-        {dailyEnergyMix.map((dayMix) => (
+        {dailyEnergyMix.map((dayMix, dayIndex) => (
           <article className="daily-mix-card" key={dayMix.date}>
             <div className="card-header">
-              <h2>{formatMixDate(dayMix.date, language)}</h2>
+              <div className="card-title-group">
+                <p className="day-label">{text.dayLabels[dayIndex]}</p>
+                <h2>{formatMixDate(dayMix.date, language)}</h2>
+              </div>
               <span>
                 {dayMix.cleanEnergyPercentage}% {text.cleanEnergy}
               </span>

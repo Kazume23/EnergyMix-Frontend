@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import type { EnergySourceShare } from '../types/energyMix'
 
@@ -17,7 +18,9 @@ const sourceColors: Record<string, string> = {
   wind: '#4f7f64',
 }
 
-export function EnergyMixPieChart({ sources }: EnergyMixPieChartProps) {
+export const EnergyMixPieChart = memo(function EnergyMixPieChart({
+  sources,
+}: EnergyMixPieChartProps) {
   return (
     <div className="chart-wrapper">
       <ResponsiveContainer width="100%" height="100%">
@@ -29,6 +32,7 @@ export function EnergyMixPieChart({ sources }: EnergyMixPieChartProps) {
             cx="50%"
             cy="50%"
             outerRadius={80}
+            isAnimationActive={false}
             label
           >
             {sources.map((source) => (
@@ -43,4 +47,4 @@ export function EnergyMixPieChart({ sources }: EnergyMixPieChartProps) {
       </ResponsiveContainer>
     </div>
   )
-}
+})
