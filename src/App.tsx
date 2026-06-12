@@ -311,6 +311,15 @@ function App() {
         <p>{text.intro}</p>
       </header>
 
+      <section className="task-rules" aria-label="Task rules">
+        <p>
+          <strong>{text.cleanEnergyRuleLabel}</strong> {text.cleanEnergyRule}
+        </p>
+        <p>
+          <strong>{text.chargingRuleLabel}</strong> {text.chargingRule}
+        </p>
+      </section>
+
       <section className="charging-section">
         <p className="eyebrow">{text.chargingEyebrow}</p>
         <h2>{text.chargingTitle}</h2>
@@ -391,15 +400,6 @@ function App() {
             )}
           </div>
         )}
-      </section>
-
-      <section className="task-rules" aria-label="Task rules">
-        <p>
-          <strong>{text.cleanEnergyRuleLabel}</strong> {text.cleanEnergyRule}
-        </p>
-        <p>
-          <strong>{text.chargingRuleLabel}</strong> {text.chargingRule}
-        </p>
       </section>
 
       <section className="daily-mix-grid">
