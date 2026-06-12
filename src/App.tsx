@@ -24,18 +24,39 @@ function App() {
   }, [])
 
   if (isLoading) {
-    return <main>Loading energy mix...</main>
+    return <main className="page">Loading energy mix...</main>
   }
 
   if (errorMessage) {
-    return <main>{errorMessage}</main>
+    return <main className="page error-message">{errorMessage}</main>
   }
 
   return (
-    <main>
-      <h1>UK Energy Mix</h1>
+    <main className="page">
+      <header className="page-header">
+        <h1>UK Energy Mix</h1>
+        <p>Daily average energy generation mix based on Carbon Intensity API data.</p>
+      </header>
 
-      <pre>{JSON.stringify(dailyEnergyMix, null, 2)}</pre>
+      <section className="daily-mix-grid">
+        {dailyEnergyMix.map((dayMix) => (
+          <article className="daily-mix-card" key={dayMix.date}>
+            <div className="card-header">
+              <h2>{dayMix.date}</h2>
+              <span>{dayMix.cleanEnergyPercentage}% clean energy</span>
+            </div>
+
+            <ul className="source-list">
+              {dayMix.sources.map((source) => (
+                <li key={source.fuel}>
+                  <span>{source.fuel}</span>
+                  <strong>{source.percentage}%</strong>
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </section>
     </main>
   )
 }
