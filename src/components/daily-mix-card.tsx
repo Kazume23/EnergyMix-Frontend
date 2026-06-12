@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { fuelLabels } from '../i18n/copy'
+import { fuelLabels } from '../i18n/translations'
 import type { DailyEnergyMix } from '../types/energy-mix'
 import type { Language } from '../types/settings'
 import { formatMixDate } from '../utils/date-formatters'

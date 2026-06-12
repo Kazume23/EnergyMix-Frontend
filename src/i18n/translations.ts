@@ -1,35 +1,7 @@
-import type { Language, Theme } from '../types/settings'
+import type { TranslationMessages } from '../types/i18n'
+import type { Language } from '../types/settings'
 
-export type AppCopy = {
-  loading: string
-  dailyError: string
-  chargingRangeError: string
-  chargingError: string
-  themeButton: Record<Theme, string>
-  languageButton: string
-  displaySettings: string
-  eyebrow: string
-  title: string
-  intro: string
-  cleanEnergyRule: string
-  cleanEnergyRuleLabel: string
-  chargingRule: string
-  chargingRuleLabel: string
-  dayLabels: [string, string, string]
-  cleanEnergy: string
-  chargingEyebrow: string
-  chargingTitle: string
-  chargingDescription: string
-  chargingDuration: string
-  calculating: string
-  findWindow: string
-  start: string
-  end: string
-  averageCleanEnergy: string
-  optimalWindowMix: string
-}
-
-export const appCopy: Record<Language, AppCopy> = {
+export const translations: Record<Language, TranslationMessages> = {
   en: {
     loading: 'Loading grid data...',
     dailyError: 'Could not load the UK energy mix.',

@@ -5,7 +5,7 @@ import { DailyMixGrid } from './components/daily-mix-grid'
 import { PageHeader } from './components/page-header'
 import { TaskRules } from './components/task-rules'
 import { languageStorageKey, themeStorageKey } from './constants/app-config'
-import { appCopy } from './i18n/copy'
+import { translations } from './i18n/translations'
 import type { DailyEnergyMix, OptimalChargingWindow } from './types/energy-mix'
 import type {
   ChargingWindowError,
@@ -88,12 +88,12 @@ function App() {
     }
   }
 
-  const text = appCopy[language]
+  const messages = translations[language]
 
   if (isDailyMixLoading) {
     return (
       <main className="page status-page" data-theme={theme}>
-        {text.loading}
+        {messages.loading}
       </main>
     )
   }
@@ -101,7 +101,7 @@ function App() {
   if (hasDailyMixError) {
     return (
       <main className="page error-message" data-theme={theme}>
-        {text.dailyError}
+        {messages.dailyError}
       </main>
     )
   }
@@ -109,13 +109,13 @@ function App() {
   return (
     <main className="page" data-theme={theme}>
       <PageHeader
-        text={text}
+        messages={messages}
         theme={theme}
         onLanguageToggle={handleLanguageToggle}
         onThemeToggle={handleThemeToggle}
       />
 
-      <TaskRules text={text} />
+      <TaskRules messages={messages} />
 
       <ChargingSection
         chargingHours={chargingHours}
@@ -123,15 +123,15 @@ function App() {
         error={chargingWindowError}
         isLoading={isChargingWindowLoading}
         language={language}
-        text={text}
+        messages={messages}
         onChargingHoursChange={handleChargingHoursChange}
         onSubmit={handleChargingWindowSubmit}
       />
 
       <DailyMixGrid
-        cleanEnergyLabel={text.cleanEnergy}
+        cleanEnergyLabel={messages.cleanEnergy}
         dailyEnergyMix={dailyEnergyMix}
-        dayLabels={text.dayLabels}
+        dayLabels={messages.dayLabels}
         language={language}
       />
     </main>

@@ -1,17 +1,18 @@
-import type { AppCopy } from '../i18n/copy'
+import type { TranslationMessages } from '../types/i18n'
 
 type TaskRulesProps = {
-  text: AppCopy
+  messages: TranslationMessages
 }
 
-export function TaskRules({ text }: TaskRulesProps) {
+export function TaskRules({ messages }: TaskRulesProps) {
   return (
     <section className="task-rules" aria-label="Task rules">
       <p>
-        <strong>{text.cleanEnergyRuleLabel}</strong> {text.cleanEnergyRule}
+        <strong>{messages.cleanEnergyRuleLabel}</strong>{' '}
+        {messages.cleanEnergyRule}
       </p>
       <p>
-        <strong>{text.chargingRuleLabel}</strong> {text.chargingRule}
+        <strong>{messages.chargingRuleLabel}</strong> {messages.chargingRule}
       </p>
     </section>
   )

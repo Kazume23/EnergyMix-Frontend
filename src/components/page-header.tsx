@@ -1,16 +1,16 @@
 import { ViewControls } from './view-controls'
-import type { AppCopy } from '../i18n/copy'
+import type { TranslationMessages } from '../types/i18n'
 import type { Theme } from '../types/settings'
 
 type PageHeaderProps = {
-  text: AppCopy
+  messages: TranslationMessages
   theme: Theme
   onLanguageToggle: () => void
   onThemeToggle: () => void
 }
 
 export function PageHeader({
-  text,
+  messages,
   theme,
   onLanguageToggle,
   onThemeToggle,
@@ -18,20 +18,20 @@ export function PageHeader({
   return (
     <header className="page-header">
       <div className="header-top">
-        <p className="eyebrow">{text.eyebrow}</p>
+        <p className="eyebrow">{messages.eyebrow}</p>
 
         <ViewControls
-          ariaLabel={text.displaySettings}
-          languageLabel={text.languageButton}
+          ariaLabel={messages.displaySettings}
+          languageLabel={messages.languageButton}
           theme={theme}
-          themeLabel={text.themeButton[theme]}
+          themeLabel={messages.themeButton[theme]}
           onLanguageToggle={onLanguageToggle}
           onThemeToggle={onThemeToggle}
         />
       </div>
 
-      <h1>{text.title}</h1>
-      <p>{text.intro}</p>
+      <h1>{messages.title}</h1>
+      <p>{messages.intro}</p>
     </header>
   )
 }
