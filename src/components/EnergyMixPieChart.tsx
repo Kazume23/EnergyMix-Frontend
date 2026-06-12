@@ -1,9 +1,18 @@
 import { memo } from 'react'
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
+import {
+  Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Sector,
+  Tooltip,
+} from 'recharts'
+import type { PieSectorShapeProps } from 'recharts'
 import type { EnergySourceShare } from '../types/energyMix'
 
 type EnergyMixPieChartProps = {
   sources: EnergySourceShare[]
+  onActiveFuelChange?: (fuel: string | null) => void
 }
 
 const sourceColors: Record<string, string> = {
@@ -18,15 +27,43 @@ const sourceColors: Record<string, string> = {
   wind: '#4f7f64',
 }
 
+const initialChartDimension = {
+  width: 240,
+  height: 240,
+}
+
+function renderPieSector(props: PieSectorShapeProps) {
+  const { isActive, ...sectorProps } = props
+  const outerRadius =
+    typeof sectorProps.outerRadius === 'number' ? sectorProps.outerRadius : 80
+
+  return (
+    <Sector
+      {...sectorProps}
+      className={isActive ? 'pie-sector pie-sector-active' : 'pie-sector'}
+      outerRadius={isActive ? outerRadius + 8 : outerRadius}
+    />
+  )
+}
+
 export const EnergyMixPieChart = memo(function EnergyMixPieChart({
   sources,
+  onActiveFuelChange,
 }: EnergyMixPieChartProps) {
+  const chartSources = sources.filter((source) => source.percentage > 0)
+
   return (
     <div className="chart-wrapper">
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer
+        width="100%"
+        height="100%"
+        minWidth={1}
+        minHeight={1}
+        initialDimension={initialChartDimension}
+      >
         <PieChart>
           <Pie
-            data={sources}
+            data={chartSources}
             dataKey="percentage"
             nameKey="fuel"
             cx="50%"
@@ -34,8 +71,15 @@ export const EnergyMixPieChart = memo(function EnergyMixPieChart({
             outerRadius={80}
             isAnimationActive={false}
             label
+            shape={renderPieSector}
+            onMouseEnter={(_, index) => {
+              onActiveFuelChange?.(chartSources[index]?.fuel ?? null)
+            }}
+            onMouseLeave={() => {
+              onActiveFuelChange?.(null)
+            }}
           >
-            {sources.map((source) => (
+            {chartSources.map((source) => (
               <Cell
                 key={source.fuel}
                 fill={sourceColors[source.fuel] ?? '#e2e8f0'}

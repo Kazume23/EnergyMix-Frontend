@@ -8,6 +8,13 @@ type Language = 'en' | 'pl'
 type Theme = 'light' | 'dark'
 type ChargingWindowError = 'range' | 'request'
 
+type DailyMixCardProps = {
+  dayMix: DailyEnergyMix
+  dayLabel: string
+  language: Language
+  cleanEnergyLabel: string
+}
+
 const fuelLabels: Record<Language, Record<string, string>> = {
   en: {
     biomass: 'Biomass',
@@ -118,6 +125,20 @@ function isCleanEnergySource(fuel: string) {
   return cleanEnergySources.has(fuel.toLowerCase())
 }
 
+function getSourceItemClassName(isCleanSource: boolean, isActiveSource: boolean) {
+  const classNames: string[] = []
+
+  if (isCleanSource) {
+    classNames.push('clean-source')
+  }
+
+  if (isActiveSource) {
+    classNames.push('active-source')
+  }
+
+  return classNames.length > 0 ? classNames.join(' ') : undefined
+}
+
 function isLanguage(value: string | null): value is Language {
   return value === 'en' || value === 'pl'
 }
@@ -177,6 +198,20 @@ function LanguageIcon() {
   )
 }
 
+function LeafIcon() {
+  return (
+    <svg
+      className="source-leaf-icon"
+      viewBox="0 0 24 24"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M5 21c4.6-1.2 8.6-4.1 11-8" />
+      <path d="M7 17C4.9 10.6 8.7 4.5 19 3c1.4 9.4-4.7 13.3-10.4 12.4" />
+    </svg>
+  )
+}
+
 function formatMixDate(date: string, language: Language) {
   const formattedDate = new Intl.DateTimeFormat(localeByLanguage[language], {
     weekday: 'short',
@@ -196,6 +231,54 @@ function formatWindowDate(date: string, language: Language) {
   }).format(new Date(date))
 
   return language === 'pl' ? formattedDate.replaceAll(',', '') : formattedDate
+}
+
+function DailyMixCard({
+  dayMix,
+  dayLabel,
+  language,
+  cleanEnergyLabel,
+}: DailyMixCardProps) {
+  const [activeFuel, setActiveFuel] = useState<string | null>(null)
+
+  return (
+    <article className="daily-mix-card">
+      <div className="card-header">
+        <div className="card-title-group">
+          <p className="day-label">{dayLabel}</p>
+          <h2>{formatMixDate(dayMix.date, language)}</h2>
+        </div>
+        <span>
+          {dayMix.cleanEnergyPercentage}% {cleanEnergyLabel}
+        </span>
+      </div>
+
+      <EnergyMixPieChart
+        sources={dayMix.sources}
+        onActiveFuelChange={setActiveFuel}
+      />
+
+      <ul className="source-list">
+        {dayMix.sources.map((source) => {
+          const isCleanSource = isCleanEnergySource(source.fuel)
+          const isActiveSource = activeFuel === source.fuel
+
+          return (
+            <li
+              className={getSourceItemClassName(isCleanSource, isActiveSource)}
+              key={source.fuel}
+            >
+              <span className="source-name">
+                {fuelLabels[language][source.fuel] ?? source.fuel}
+                {isCleanSource && <LeafIcon />}
+              </span>
+              <strong>{source.percentage}%</strong>
+            </li>
+          )
+        })}
+      </ul>
+    </article>
+  )
 }
 
 function App() {
@@ -404,33 +487,13 @@ function App() {
 
       <section className="daily-mix-grid">
         {dailyEnergyMix.map((dayMix, dayIndex) => (
-          <article className="daily-mix-card" key={dayMix.date}>
-            <div className="card-header">
-              <div className="card-title-group">
-                <p className="day-label">{text.dayLabels[dayIndex]}</p>
-                <h2>{formatMixDate(dayMix.date, language)}</h2>
-              </div>
-              <span>
-                {dayMix.cleanEnergyPercentage}% {text.cleanEnergy}
-              </span>
-            </div>
-
-            <EnergyMixPieChart sources={dayMix.sources} />
-
-            <ul className="source-list">
-              {dayMix.sources.map((source) => (
-                <li
-                  className={isCleanEnergySource(source.fuel) ? 'clean-source' : undefined}
-                  key={source.fuel}
-                >
-                  <span>
-                    {fuelLabels[language][source.fuel] ?? source.fuel}
-                  </span>
-                  <strong>{source.percentage}%</strong>
-                </li>
-              ))}
-            </ul>
-          </article>
+          <DailyMixCard
+            cleanEnergyLabel={text.cleanEnergy}
+            dayLabel={text.dayLabels[dayIndex]}
+            dayMix={dayMix}
+            key={dayMix.date}
+            language={language}
+          />
         ))}
       </section>
 
