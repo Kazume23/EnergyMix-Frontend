@@ -50,6 +50,12 @@
   font-weight: 700;
 }
 
+.chart-wrapper {
+  width: 100%;
+  height: 220px;
+  margin-bottom: 20px;
+}
+
 .source-list {
   display: flex;
   flex-direction: column;

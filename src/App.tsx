@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { getDailyEnergyMix } from './api/carbonApi'
 import type { DailyEnergyMix } from './types/energyMix'
 import './App.css'
+import { EnergyMixPieChart } from './components/EnergyMixPieChart'
 
 function App() {
   const [dailyEnergyMix, setDailyEnergyMix] = useState<DailyEnergyMix[]>([])
@@ -45,6 +46,8 @@ function App() {
               <h2>{dayMix.date}</h2>
               <span>{dayMix.cleanEnergyPercentage}% clean energy</span>
             </div>
+
+            <EnergyMixPieChart sources={dayMix.sources} />
 
             <ul className="source-list">
               {dayMix.sources.map((source) => (
