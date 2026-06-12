@@ -1,13 +1,57 @@
 .page {
+  --page-bg: #f3efe4;
+  --grid-line: rgba(47, 72, 88, 0.05);
+  --text-primary: #1f2726;
+  --text-muted: #59615c;
+  --accent-muted: #6f5a38;
+  --accent: #b7652b;
+  --clean: #496f43;
+  --panel-bg: rgba(255, 252, 244, 0.86);
+  --info-bg: rgba(237, 227, 208, 0.9);
+  --result-bg: #ede3d0;
+  --border: #cfc6b5;
+  --border-soft: #ded5c3;
+  --input-bg: #fffaf0;
+  --button-bg: #213b36;
+  --button-bg-hover: #31564d;
+  --button-text: #fffaf0;
+  --shadow: rgba(54, 42, 25, 0.08);
+  --error: #9b2f24;
+
   min-height: 100vh;
+  position: relative;
   padding: 56px;
   background:
-    linear-gradient(90deg, rgba(47, 72, 88, 0.05) 1px, transparent 1px),
-    linear-gradient(0deg, rgba(47, 72, 88, 0.05) 1px, transparent 1px),
-    #f3efe4;
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(0deg, var(--grid-line) 1px, transparent 1px),
+    var(--page-bg);
   background-size: 28px 28px;
-  color: #1f2726;
+  color: var(--text-primary);
+  color-scheme: light;
   text-align: left;
+}
+
+.page[data-theme='dark'] {
+  --page-bg: #161b1a;
+  --grid-line: rgba(229, 219, 199, 0.07);
+  --text-primary: #f0eadc;
+  --text-muted: #c6bead;
+  --accent-muted: #d0a56c;
+  --accent: #c8793a;
+  --clean: #9ab27a;
+  --panel-bg: rgba(31, 38, 36, 0.9);
+  --info-bg: rgba(60, 50, 35, 0.86);
+  --result-bg: #352f25;
+  --border: #5d5649;
+  --border-soft: #4c473d;
+  --input-bg: #202724;
+  --button-bg: #d7c49d;
+  --button-bg-hover: #ead7af;
+  --button-text: #17201d;
+  --shadow: rgba(0, 0, 0, 0.22);
+  --error: #f2a39c;
+
+  color-scheme: dark;
 }
 
 .status-page {
@@ -21,18 +65,59 @@
   margin-bottom: 34px;
 }
 
+.header-top {
+  display: block;
+}
+
 .eyebrow {
   margin: 0 0 10px;
-  color: #6f5a38;
+  color: var(--accent-muted);
   font-size: 13px;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
+.view-controls {
+  position: absolute;
+  top: 56px;
+  right: 56px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.view-controls button {
+  display: inline-grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.view-controls button:hover {
+  border-color: var(--accent);
+}
+
+.control-icon {
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
 .page-header h1 {
   margin: 0 0 12px;
-  color: #1f2726;
+  color: var(--text-primary);
   font-size: clamp(40px, 7vw, 76px);
   font-weight: 850;
   line-height: 0.95;
@@ -41,7 +126,7 @@
 .page-header p:not(.eyebrow) {
   max-width: 680px;
   margin: 0;
-  color: #59615c;
+  color: var(--text-muted);
   font-size: 18px;
 }
 
@@ -56,13 +141,13 @@
 .task-rules p {
   margin: 0;
   padding: 14px 16px;
-  border-left: 4px solid #b7652b;
-  background: rgba(237, 227, 208, 0.9);
-  color: #4f5852;
+  border-left: 4px solid var(--accent);
+  background: var(--info-bg);
+  color: var(--text-muted);
 }
 
 .task-rules strong {
-  color: #1f2726;
+  color: var(--text-primary);
 }
 
 .daily-mix-grid {
@@ -74,10 +159,10 @@
 
 .daily-mix-card,
 .charging-section {
-  border: 1px solid #cfc6b5;
+  border: 1px solid var(--border);
   border-radius: 8px;
-  background: rgba(255, 252, 244, 0.86);
-  box-shadow: 0 18px 36px rgba(54, 42, 25, 0.08);
+  background: var(--panel-bg);
+  box-shadow: 0 18px 36px var(--shadow);
 }
 
 .daily-mix-card {
@@ -99,18 +184,18 @@
   gap: 16px;
   margin-bottom: 18px;
   padding-bottom: 14px;
-  border-bottom: 1px solid #ded5c3;
+  border-bottom: 1px solid var(--border-soft);
 }
 
 .card-header h2 {
   margin: 0;
-  color: #1f2726;
+  color: var(--text-primary);
   font-size: 25px;
   font-weight: 800;
 }
 
 .card-header span {
-  color: #496f43;
+  color: var(--clean);
   font-size: 14px;
   font-weight: 800;
   white-space: nowrap;
@@ -123,7 +208,7 @@
 }
 
 .chart-wrapper text {
-  fill: #2b3430;
+  fill: var(--text-primary);
   font-size: 12px;
   font-weight: 700;
 }
@@ -142,7 +227,7 @@
   gap: 16px;
   align-items: center;
   padding: 9px 0;
-  border-bottom: 1px dashed #cfc6b5;
+  border-bottom: 1px dashed var(--border);
 }
 
 .source-list li:last-child {
@@ -150,11 +235,11 @@
 }
 
 .source-list span {
-  color: #59615c;
+  color: var(--text-muted);
 }
 
 .source-list strong {
-  color: #1f2726;
+  color: var(--text-primary);
   font-variant-numeric: tabular-nums;
 }
 
@@ -166,13 +251,13 @@
 
 .charging-section h2 {
   margin: 0 0 8px;
-  color: #1f2726;
+  color: var(--text-primary);
   font-size: 32px;
   font-weight: 850;
 }
 
 .charging-section p:not(.eyebrow) {
-  color: #59615c;
+  color: var(--text-muted);
 }
 
 .charging-form {
@@ -182,7 +267,7 @@
 }
 
 .charging-form label {
-  color: #2b3430;
+  color: var(--text-primary);
   font-weight: 800;
 }
 
@@ -195,27 +280,28 @@
 .charging-controls input {
   width: 118px;
   padding: 11px 12px;
-  border: 1px solid #a99d88;
+  border: 1px solid var(--border);
   border-radius: 6px;
-  background: #fffaf0;
-  color: #1f2726;
+  background: var(--input-bg);
+  color: var(--text-primary);
   font: inherit;
   font-weight: 700;
 }
 
 .charging-controls button {
   padding: 11px 18px;
-  border: 1px solid #213b36;
+  border: 1px solid var(--button-bg);
   border-radius: 6px;
-  background: #213b36;
-  color: #fffaf0;
+  background: var(--button-bg);
+  color: var(--button-text);
   font: inherit;
   font-weight: 800;
   cursor: pointer;
 }
 
 .charging-controls button:hover:not(:disabled) {
-  background: #31564d;
+  border-color: var(--button-bg-hover);
+  background: var(--button-bg-hover);
 }
 
 .charging-controls button:disabled {
@@ -226,8 +312,8 @@
 .charging-result {
   margin-top: 22px;
   padding: 16px;
-  border-left: 5px solid #b7652b;
-  background: #ede3d0;
+  border-left: 5px solid var(--accent);
+  background: var(--result-bg);
 }
 
 .charging-result p {
@@ -235,17 +321,22 @@
 }
 
 .charging-result strong {
-  color: #1f2726;
+  color: var(--text-primary);
 }
 
 .error-message {
-  color: #9b2f24;
+  color: var(--error);
   font-weight: 700;
 }
 
 @media (max-width: 1000px) {
   .page {
     padding: 32px 22px;
+  }
+
+  .view-controls {
+    top: 32px;
+    right: 22px;
   }
 
   .daily-mix-grid {
@@ -263,6 +354,14 @@
 }
 
 @media (max-width: 560px) {
+  .header-top {
+    padding-right: 100px;
+  }
+
+  .view-controls {
+    justify-content: flex-end;
+  }
+
   .page-header h1 {
     font-size: 42px;
   }
