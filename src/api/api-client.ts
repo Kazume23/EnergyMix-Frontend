@@ -1,8 +1,5 @@
-import { apiRequestTimeoutMs } from '../constants/app-config'
-
 export type ApiRequestOptions = {
   signal?: AbortSignal
-  timeoutMs?: number
 }
 
 export type ApiRequestErrorCode =
@@ -10,7 +7,6 @@ export type ApiRequestErrorCode =
   | 'http'
   | 'invalid-response'
   | 'network'
-  | 'timeout'
 
 type ResponseParser<TResponse> = (response: unknown) => TResponse
 
@@ -71,13 +67,7 @@ export async function requestJson<TResponse>(
   options: ApiRequestOptions = {},
 ): Promise<TResponse> {
   const controller = new AbortController()
-  const timeoutMs = options.timeoutMs ?? apiRequestTimeoutMs
-  let didTimeout = false
   const disconnectAbortSignals = connectAbortSignals(controller, options.signal)
-  const timeoutId = setTimeout(() => {
-    didTimeout = true
-    controller.abort()
-  }, timeoutMs)
 
   try {
     const response = await fetch(buildApiUrl(path), {
@@ -116,17 +106,12 @@ export async function requestJson<TResponse>(
       throw error
     }
 
-    if (didTimeout) {
-      throw new ApiRequestError('API request timed out.', 'timeout')
-    }
-
     if (controller.signal.aborted) {
       throw new ApiRequestError('API request was cancelled.', 'aborted')
     }
 
     throw new ApiRequestError('Network request failed.', 'network')
   } finally {
-    clearTimeout(timeoutId)
     disconnectAbortSignals?.()
   }
 }
