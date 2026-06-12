@@ -1,20 +1,41 @@
 # EnergyMix Frontend
 
-Frontend for a recruitment task that displays the current and forecast UK energy generation mix and helps users find the cleanest electric vehicle charging window.
+Frontend application for the EnergyMix recruitment task. It displays the UK electricity generation mix for three days and allows the user to find the cleanest electric vehicle charging window based on data returned by the backend API.
 
-The app consumes a backend API that aggregates data from the public Carbon Intensity API.
+This repository contains the React frontend. The backend API is maintained in a separate repository.
+
+## Related Repositories
+
+* Frontend: https://github.com/Kazume23/EnergyMix-Frontend
+* Backend API: https://github.com/Kazume23/EnergyMix-Backend
+
+## Deployed Application
+
+* Frontend: https://energymix-frontend-hju7.onrender.com
+* Backend API: https://energymix-backend-wsuq.onrender.com
 
 ## Features
 
-* Shows the UK energy mix for three days: today, tomorrow, and the day after tomorrow.
-* Displays one pie chart per day with source percentages and clean energy share.
-* Labels each daily card with its relative day, so the three columns are easy to read.
-* Calculates the cleanest EV charging window for a selected duration from 1 to 6 full hours.
-* Displays the averaged generation mix for the selected optimal charging window.
-* Uses the task definition of clean energy: biomass, nuclear, hydro, wind, and solar.
-* Supports English and Polish UI language switching.
-* Supports light and dark mode.
-* Saves the selected language and theme in local storage.
+* Displays the UK energy mix for today, tomorrow, and the day after tomorrow.
+* Shows one pie chart per day with generation source percentages.
+* Displays clean energy percentage for each day.
+* Allows the user to enter EV charging duration from 1 to 6 full hours.
+* Sends the selected charging duration to the backend API.
+* Displays the optimal charging window returned by the backend:
+
+  * start date and time
+  * end date and time
+  * average clean energy percentage
+
+Clean energy sources for this task:
+
+```text
+biomass
+nuclear
+hydro
+wind
+solar
+```
 
 ## Technology Stack
 
@@ -25,23 +46,23 @@ The app consumes a backend API that aggregates data from the public Carbon Inten
 
 ## Backend API
 
-The frontend expects two backend endpoints:
+The frontend expects the backend to expose these endpoints:
 
 ```http
 GET /api/carbon/daily-mix
 ```
 
-Returns the averaged generation mix for today, tomorrow, and the day after tomorrow.
+Returns averaged generation mix data for today, tomorrow, and the day after tomorrow.
 
 ```http
 GET /api/carbon/optimal-charging-window?hours=3
 ```
 
-Returns the best charging window for the selected duration, including start time, end time, average clean energy percentage, and averaged source shares for that window.
+Returns the optimal charging window for the selected duration, including start time, end time, and average clean energy percentage.
 
 ## Environment Configuration
 
-For local development, Vite proxies `/api` requests to the backend configured in `vite.config.ts`:
+For local development, the Vite development server can proxy `/api` requests to the local backend configured in `vite.config.ts`:
 
 ```text
 https://localhost:7008
@@ -53,7 +74,13 @@ For deployed environments, set:
 VITE_API_BASE_URL=https://your-backend-url.com
 ```
 
-When `VITE_API_BASE_URL` is not set, requests are made to `/api/...`, which allows the local Vite proxy to handle them.
+Current production backend URL:
+
+```env
+VITE_API_BASE_URL=https://energymix-backend-wsuq.onrender.com
+```
+
+When `VITE_API_BASE_URL` is not set, requests are made to `/api/...`, which allows the Vite proxy to forward them to the local backend.
 
 ## Running Locally
 
@@ -63,7 +90,11 @@ Install dependencies:
 npm install
 ```
 
-Start the backend according to the backend repository instructions.
+Start the backend first according to the backend repository instructions:
+
+```text
+https://github.com/Kazume23/EnergyMix-Backend
+```
 
 Run the frontend development server:
 
@@ -94,4 +125,4 @@ npm run preview
 
 ## Notes
 
-The frontend is intentionally focused on the requirements from the recruitment task: daily mix visibility, clean energy percentage, and EV charging optimization based on half-hour forecast intervals processed by the backend.
+The frontend is intentionally focused on the requirements from the recruitment task: daily energy mix visibility, clean energy percentage, and EV charging optimization. The calculation logic is handled by the backend.
