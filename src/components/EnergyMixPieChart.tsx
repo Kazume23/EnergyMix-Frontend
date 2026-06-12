@@ -6,15 +6,15 @@ type EnergyMixPieChartProps = {
 }
 
 const sourceColors: Record<string, string> = {
-  biomass: '#84cc16',
-  coal: '#64748b',
-  gas: '#f97316',
-  hydro: '#38bdf8',
-  imports: '#a78bfa',
-  nuclear: '#facc15',
-  other: '#94a3b8',
-  solar: '#fde047',
-  wind: '#22c55e',
+  biomass: '#6f7f3a',
+  coal: '#4e5652',
+  gas: '#b7652b',
+  hydro: '#4e8791',
+  imports: '#7a5d8c',
+  nuclear: '#d6a73d',
+  other: '#8c8678',
+  solar: '#e2bf52',
+  wind: '#4f7f64',
 }
 
 export function EnergyMixPieChart({ sources }: EnergyMixPieChartProps) {
