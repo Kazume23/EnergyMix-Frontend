@@ -13,7 +13,7 @@ import type {
   Theme,
 } from './types/settings'
 import { getStoredLanguage, getStoredTheme } from './utils/preferences'
-import './app.css'
+import './application.css'
 
 function App() {
   const [language, setLanguage] = useState<Language>(getStoredLanguage)
