@@ -79,7 +79,7 @@ const copy = {
     eyebrow: 'Jakub Witek / Carbon Intensity API',
     title: 'Planer miksu energetycznego UK',
     intro:
-      'Aktualny i prognozowany miks produkcji energii dla Wielkiej Brytanii oraz najczystsze okno ładowania samochodu elektrycznego. Interfejs realizuje założenia zadania: trzy dzienne wykresy kołowe i obliczenie ładowania w zakresie 1-6 godzin.',
+      'Aktualny i prognozowany miks produkcji energii dla Wielkiej Brytanii oraz najczystsze okno ładowania samochodu elektrycznego. Interfejs realizuje założenia zadania: pokazuje wykresy kołowe na najbliższe trzy dni i obliczenia ładowania w zakresie 1-6 godzin.',
     cleanEnergyRule:
       'biomass, nuclear, hydro, wind i solar.',
     cleanEnergyRuleLabel: 'Czysta energia w tym zadaniu:',
@@ -103,6 +103,28 @@ const copy = {
 const localeByLanguage: Record<Language, string> = {
   en: 'en-GB',
   pl: 'pl-PL',
+}
+
+const chargingDurationOptions = [1, 2, 3, 4, 5, 6]
+const languageStorageKey = 'energyMixLanguage'
+const themeStorageKey = 'energyMixTheme'
+
+function isLanguage(value: string | null): value is Language {
+  return value === 'en' || value === 'pl'
+}
+
+function isTheme(value: string | null): value is Theme {
+  return value === 'light' || value === 'dark'
+}
+
+function getStoredLanguage(): Language {
+  const storedLanguage = localStorage.getItem(languageStorageKey)
+  return isLanguage(storedLanguage) ? storedLanguage : 'en'
+}
+
+function getStoredTheme(): Theme {
+  const storedTheme = localStorage.getItem(themeStorageKey)
+  return isTheme(storedTheme) ? storedTheme : 'light'
 }
 
 function MoonIcon() {
@@ -164,8 +186,8 @@ function formatWindowDate(date: string, language: Language) {
 }
 
 function App() {
-  const [language, setLanguage] = useState<Language>('en')
-  const [theme, setTheme] = useState<Theme>('light')
+  const [language, setLanguage] = useState<Language>(getStoredLanguage)
+  const [theme, setTheme] = useState<Theme>(getStoredTheme)
   const [dailyEnergyMix, setDailyEnergyMix] = useState<DailyEnergyMix[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
@@ -190,6 +212,14 @@ function App() {
 
     loadDailyEnergyMix()
   }, [])
+
+  useEffect(() => {
+    localStorage.setItem(languageStorageKey, language)
+  }, [language])
+
+  useEffect(() => {
+    localStorage.setItem(themeStorageKey, theme)
+  }, [theme])
 
   async function handleChargingWindowSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -245,17 +275,21 @@ function App() {
               type="button"
               onClick={() => setTheme(nextTheme)}
               aria-label={text.themeButton[theme]}
-              title={text.themeButton[theme]}
             >
               {theme === 'light' ? <MoonIcon /> : <SunIcon />}
+              <span className="control-tooltip" aria-hidden="true">
+                {text.themeButton[theme]}
+              </span>
             </button>
             <button
               type="button"
               onClick={() => setLanguage(nextLanguage)}
               aria-label={text.languageButton}
-              title={text.languageButton}
             >
               <LanguageIcon />
+              <span className="control-tooltip" aria-hidden="true">
+                {text.languageButton}
+              </span>
             </button>
           </div>
         </div>
@@ -304,23 +338,46 @@ function App() {
         <h2>{text.chargingTitle}</h2>
         <p>{text.chargingDescription}</p>
 
-        <form className="charging-form" onSubmit={handleChargingWindowSubmit}>
-          <label htmlFor="charging-hours">{text.chargingDuration}</label>
+        <form
+          className="charging-form"
+          onSubmit={handleChargingWindowSubmit}
+          noValidate
+        >
+          <fieldset className="charging-duration-field">
+            <legend>{text.chargingDuration}</legend>
 
-          <div className="charging-controls">
-            <input
-              id="charging-hours"
-              type="number"
-              min="1"
-              max="6"
-              value={chargingHours}
-              onChange={(event) => setChargingHours(Number(event.target.value))}
-            />
+            <div className="charging-controls">
+              <div
+                className="duration-options"
+                role="group"
+                aria-label={text.chargingDuration}
+                aria-invalid={chargingWindowError === 'range'}
+              >
+                {chargingDurationOptions.map((hours) => (
+                  <button
+                    className="duration-option"
+                    type="button"
+                    key={hours}
+                    aria-pressed={chargingHours === hours}
+                    onClick={() => {
+                      setChargingHours(hours)
+                      setChargingWindowError(null)
+                    }}
+                  >
+                    {hours}h
+                  </button>
+                ))}
+              </div>
 
-            <button type="submit" disabled={isChargingWindowLoading}>
-              {isChargingWindowLoading ? text.calculating : text.findWindow}
-            </button>
-          </div>
+              <button
+                className="find-window-button"
+                type="submit"
+                disabled={isChargingWindowLoading}
+              >
+                {isChargingWindowLoading ? text.calculating : text.findWindow}
+              </button>
+            </div>
+          </fieldset>
         </form>
 
         {chargingWindowError && (

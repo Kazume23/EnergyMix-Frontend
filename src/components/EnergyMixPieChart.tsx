@@ -20,7 +20,7 @@ const sourceColors: Record<string, string> = {
 export function EnergyMixPieChart({ sources }: EnergyMixPieChartProps) {
   return (
     <div className="chart-wrapper">
-      <ResponsiveContainer width="100%" height={220}>
+      <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
             data={sources}
