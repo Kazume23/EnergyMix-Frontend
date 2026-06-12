@@ -8,3 +8,9 @@ export type DailyEnergyMix = {
   sources: EnergySourceShare[]
   cleanEnergyPercentage: number
 }
+
+export type OptimalChargingWindow = {
+  start: string
+  end: string
+  averageCleanEnergyPercentage: number
+}
