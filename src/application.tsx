@@ -1,22 +1,24 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import { useTranslation } from 'react-i18next'
 import { getDailyEnergyMix, getOptimalChargingWindow } from './api/carbon-api'
 import { ChargingSection } from './components/charging-section'
 import { DailyMixGrid } from './components/daily-mix-grid'
 import { PageHeader } from './components/page-header'
 import { TaskRules } from './components/task-rules'
 import { languageStorageKey, themeStorageKey } from './constants/app-config'
-import { translations } from './i18n/translations'
 import type { DailyEnergyMix, OptimalChargingWindow } from './types/energy-mix'
-import type {
-  ChargingWindowError,
-  Language,
-  Theme,
-} from './types/settings'
-import { getStoredLanguage, getStoredTheme } from './utils/preferences'
+import type { ChargingWindowError, Theme } from './types/settings'
+import {
+  getNextLanguage,
+  getStoredTheme,
+  getSupportedLanguage,
+} from './utils/preferences'
 import './application.css'
 
 function App() {
-  const [language, setLanguage] = useState<Language>(getStoredLanguage)
+  const { i18n, t } = useTranslation()
+  const language = getSupportedLanguage(i18n.resolvedLanguage ?? i18n.language)
+
   const [theme, setTheme] = useState<Theme>(getStoredTheme)
   const [dailyEnergyMix, setDailyEnergyMix] = useState<DailyEnergyMix[]>([])
   const [isDailyMixLoading, setIsDailyMixLoading] = useState(true)
@@ -58,7 +60,7 @@ function App() {
   }
 
   function handleLanguageToggle() {
-    setLanguage((currentLanguage) => (currentLanguage === 'en' ? 'pl' : 'en'))
+    void i18n.changeLanguage(getNextLanguage(language))
   }
 
   function handleThemeToggle() {
@@ -88,12 +90,10 @@ function App() {
     }
   }
 
-  const messages = translations[language]
-
   if (isDailyMixLoading) {
     return (
       <main className="page status-page" data-theme={theme}>
-        {messages.loading}
+        {t('loading')}
       </main>
     )
   }
@@ -101,7 +101,7 @@ function App() {
   if (hasDailyMixError) {
     return (
       <main className="page error-message" data-theme={theme}>
-        {messages.dailyError}
+        {t('dailyError')}
       </main>
     )
   }
@@ -109,31 +109,23 @@ function App() {
   return (
     <main className="page" data-theme={theme}>
       <PageHeader
-        messages={messages}
         theme={theme}
         onLanguageToggle={handleLanguageToggle}
         onThemeToggle={handleThemeToggle}
       />
 
-      <TaskRules messages={messages} />
+      <TaskRules />
 
       <ChargingSection
         chargingHours={chargingHours}
         chargingWindow={chargingWindow}
         error={chargingWindowError}
         isLoading={isChargingWindowLoading}
-        language={language}
-        messages={messages}
         onChargingHoursChange={handleChargingHoursChange}
         onSubmit={handleChargingWindowSubmit}
       />
 
-      <DailyMixGrid
-        cleanEnergyLabel={messages.cleanEnergy}
-        dailyEnergyMix={dailyEnergyMix}
-        dayLabels={messages.dayLabels}
-        language={language}
-      />
+      <DailyMixGrid dailyEnergyMix={dailyEnergyMix} />
     </main>
   )
 }

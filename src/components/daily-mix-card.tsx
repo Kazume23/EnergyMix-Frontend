@@ -1,12 +1,12 @@
 import { useState } from 'react'
-import { fuelLabels } from '../i18n/translations'
+import { useTranslation } from 'react-i18next'
 import type { DailyEnergyMix } from '../types/energy-mix'
-import type { Language } from '../types/settings'
 import { formatMixDate } from '../utils/date-formatters'
 import {
   getSourceItemClassName,
   isCleanEnergySource,
 } from '../utils/energy-sources'
+import { getSupportedLanguage } from '../utils/preferences'
 import { EnergyMixPieChart } from './energy-mix-pie-chart'
 import { LeafIcon } from './icons'
 
@@ -14,16 +14,16 @@ type DailyMixCardProps = {
   cleanEnergyLabel: string
   dayLabel: string
   dayMix: DailyEnergyMix
-  language: Language
 }
 
 export function DailyMixCard({
   cleanEnergyLabel,
   dayLabel,
   dayMix,
-  language,
 }: DailyMixCardProps) {
   const [activeFuel, setActiveFuel] = useState<string | null>(null)
+  const { i18n, t } = useTranslation()
+  const language = getSupportedLanguage(i18n.resolvedLanguage ?? i18n.language)
 
   return (
     <article className="daily-mix-card">
@@ -53,7 +53,7 @@ export function DailyMixCard({
               key={source.fuel}
             >
               <span className="source-name">
-                {fuelLabels[language][source.fuel] ?? source.fuel}
+                {t(`fuel.${source.fuel}`, { defaultValue: source.fuel })}
                 {isCleanSource && <LeafIcon />}
               </span>
               <strong>{source.percentage}%</strong>

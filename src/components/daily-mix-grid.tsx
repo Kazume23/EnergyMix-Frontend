@@ -1,29 +1,28 @@
+import { useTranslation } from 'react-i18next'
 import type { DailyEnergyMix } from '../types/energy-mix'
-import type { Language } from '../types/settings'
 import { DailyMixCard } from './daily-mix-card'
 
+const dayLabelKeys = [
+  'dayLabels.today',
+  'dayLabels.tomorrow',
+  'dayLabels.dayAfterTomorrow',
+] as const
+
 type DailyMixGridProps = {
-  cleanEnergyLabel: string
   dailyEnergyMix: DailyEnergyMix[]
-  dayLabels: [string, string, string]
-  language: Language
 }
 
-export function DailyMixGrid({
-  cleanEnergyLabel,
-  dailyEnergyMix,
-  dayLabels,
-  language,
-}: DailyMixGridProps) {
+export function DailyMixGrid({ dailyEnergyMix }: DailyMixGridProps) {
+  const { t } = useTranslation()
+
   return (
     <section className="daily-mix-grid">
       {dailyEnergyMix.map((dayMix, dayIndex) => (
         <DailyMixCard
-          cleanEnergyLabel={cleanEnergyLabel}
-          dayLabel={dayLabels[dayIndex]}
+          cleanEnergyLabel={t('cleanEnergy')}
+          dayLabel={t(dayLabelKeys[dayIndex])}
           dayMix={dayMix}
           key={dayMix.date}
-          language={language}
         />
       ))}
     </section>

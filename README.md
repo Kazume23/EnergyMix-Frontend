@@ -43,6 +43,8 @@ solar
 * TypeScript
 * Vite
 * Recharts
+* i18next / react-i18next
+* Lucide React
 
 ## Backend API
 
@@ -108,6 +110,12 @@ Build the production version:
 npm run build
 ```
 
+Run TypeScript type checking:
+
+```bash
+npm run typecheck
+```
+
 Preview the production build:
 
 ```bash
@@ -119,9 +127,16 @@ npm run preview
 ```bash
 npm run dev
 npm run build
+npm run typecheck
 npm run lint
 npm run preview
 ```
+
+## Continuous Integration
+
+GitHub Actions validates the frontend on pushes and pull requests to `main`.
+The workflow installs dependencies with `npm ci`, then runs linting, type
+checking, and the production build.
 
 ## Notes
 

@@ -1,18 +1,15 @@
-import type { TranslationMessages } from '../types/i18n'
+import { useTranslation } from 'react-i18next'
 
-type TaskRulesProps = {
-  messages: TranslationMessages
-}
+export function TaskRules() {
+  const { t } = useTranslation()
 
-export function TaskRules({ messages }: TaskRulesProps) {
   return (
     <section className="task-rules" aria-label="Task rules">
       <p>
-        <strong>{messages.cleanEnergyRuleLabel}</strong>{' '}
-        {messages.cleanEnergyRule}
+        <strong>{t('cleanEnergyRuleLabel')}</strong> {t('cleanEnergyRule')}
       </p>
       <p>
-        <strong>{messages.chargingRuleLabel}</strong> {messages.chargingRule}
+        <strong>{t('chargingRuleLabel')}</strong> {t('chargingRule')}
       </p>
     </section>
   )

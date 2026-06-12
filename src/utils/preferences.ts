@@ -14,6 +14,14 @@ export function getStoredLanguage(): Language {
   return isLanguage(storedLanguage) ? storedLanguage : 'en'
 }
 
+export function getSupportedLanguage(language: string | null | undefined): Language {
+  return language?.startsWith('pl') ? 'pl' : 'en'
+}
+
+export function getNextLanguage(language: Language): Language {
+  return language === 'en' ? 'pl' : 'en'
+}
+
 export function getStoredTheme(): Theme {
   const storedTheme = localStorage.getItem(themeStorageKey)
   return isTheme(storedTheme) ? storedTheme : 'light'
