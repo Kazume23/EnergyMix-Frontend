@@ -294,6 +294,16 @@
 .pie-sector {
   cursor: pointer;
   outline: none;
+  transform-box: view-box;
+  transform-origin: center;
+  transition:
+    transform 200ms ease-out,
+    filter 200ms ease-out;
+}
+
+.pie-sector-active {
+  filter: drop-shadow(0 4px 8px var(--shadow));
+  transform: scale(1.055);
 }
 
 .source-list {
@@ -569,5 +579,14 @@
 
   .control-tooltip {
     transition: none;
+  }
+
+  .pie-sector {
+    transition: none;
+  }
+
+  .pie-sector-active {
+    filter: none;
+    transform: none;
   }
 }

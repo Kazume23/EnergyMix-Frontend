@@ -34,14 +34,11 @@ const initialChartDimension = {
 
 function renderPieSector(props: PieSectorShapeProps) {
   const { isActive, ...sectorProps } = props
-  const outerRadius =
-    typeof sectorProps.outerRadius === 'number' ? sectorProps.outerRadius : 80
 
   return (
     <Sector
       {...sectorProps}
       className={isActive ? 'pie-sector pie-sector-active' : 'pie-sector'}
-      outerRadius={isActive ? outerRadius + 8 : outerRadius}
     />
   )
 }
