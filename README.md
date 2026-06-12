@@ -1,73 +1,86 @@
-# React + TypeScript + Vite
+# EnergyMix Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The application displays the UK energy generation mix and allows the user to find the best electric vehicle charging window based on the highest average share of clean energy.
 
-Currently, two official plugins are available:
+## Technologies
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+* React
+* TypeScript
+* Vite
+* Recharts
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* Displays daily UK energy mix for three days: today, tomorrow and the day after tomorrow.
+* Shows one pie chart per day.
+* Displays clean energy percentage for each day.
+* Allows the user to enter EV charging duration from 1 to 6 full hours.
+* Fetches and displays the optimal charging window from the backend API.
 
-## Expanding the ESLint configuration
+Clean energy sources used by the backend:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```text
+biomass
+nuclear
+hydro
+wind
+solar
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Backend API
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+The frontend expects the backend to be running locally.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Required backend endpoints:
+
+```http
+GET /api/carbon/daily-mix
+```
+
+```http
+GET /api/carbon/optimal-charging-window?hours=3
+```
+
+During local development, Vite proxy forwards `/api` requests to the backend.
+
+## Running the project
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run development server:
+
+```bash
+npm run dev
+```
+
+Build production version:
+
+```bash
+npm run build
+```
+
+Preview production build locally:
+
+```bash
+npm run preview
+```
+
+## Local development setup
+
+Run the backend first, then start the frontend.
+
+Backend:
+
+```bash
+dotnet run --project EnergyMix.Backend/EnergyMix.Backend.csproj
+```
+
+Frontend:
+
+```bash
+npm run dev
 ```
