@@ -8,23 +8,12 @@ import {
   Tooltip,
 } from 'recharts'
 import type { PieSectorShapeProps } from 'recharts'
-import type { EnergySourceShare } from '../types/energyMix'
+import { sourceColors } from '../constants/app-config'
+import type { EnergySourceShare } from '../types/energy-mix'
 
 type EnergyMixPieChartProps = {
   sources: EnergySourceShare[]
   onActiveFuelChange?: (fuel: string | null) => void
-}
-
-const sourceColors: Record<string, string> = {
-  biomass: '#6f7f3a',
-  coal: '#4e5652',
-  gas: '#b7652b',
-  hydro: '#4e8791',
-  imports: '#7a5d8c',
-  nuclear: '#d6a73d',
-  other: '#8c8678',
-  solar: '#e2bf52',
-  wind: '#4f7f64',
 }
 
 const initialChartDimension = {

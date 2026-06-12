@@ -1,4 +1,4 @@
-import type { DailyEnergyMix, OptimalChargingWindow } from '../types/energyMix'
+import type { DailyEnergyMix, OptimalChargingWindow } from '../types/energy-mix'
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? ''
 
