@@ -24,13 +24,14 @@ export function DailyMixCard({
   const [activeFuel, setActiveFuel] = useState<string | null>(null)
   const { i18n, t } = useTranslation()
   const language = getSupportedLanguage(i18n.resolvedLanguage ?? i18n.language)
+  const formattedDate = formatMixDate(dayMix.date, language)
 
   return (
     <article className="daily-mix-card">
       <div className="card-header">
         <div className="card-title-group">
           <p className="day-label">{dayLabel}</p>
-          <h2>{formatMixDate(dayMix.date, language)}</h2>
+          <h2>{formattedDate}</h2>
         </div>
         <span>
           {dayMix.cleanEnergyPercentage}% {cleanEnergyLabel}
@@ -38,6 +39,9 @@ export function DailyMixCard({
       </div>
 
       <EnergyMixPieChart
+        activeFuel={activeFuel}
+        ariaLabel={t('chart.dailyAriaLabel', { date: formattedDate })}
+        emptyLabel={t('chart.empty')}
         sources={dayMix.sources}
         onActiveFuelChange={setActiveFuel}
       />
@@ -46,14 +50,23 @@ export function DailyMixCard({
         {dayMix.sources.map((source) => {
           const isCleanSource = isCleanEnergySource(source.fuel)
           const isActiveSource = activeFuel === source.fuel
+          const translatedFuel = t(`fuel.${source.fuel}`, {
+            defaultValue: source.fuel,
+          })
 
           return (
             <li
+              aria-label={`${translatedFuel}: ${source.percentage}%`}
               className={getSourceItemClassName(isCleanSource, isActiveSource)}
               key={source.fuel}
+              onBlur={() => setActiveFuel(null)}
+              onFocus={() => setActiveFuel(source.fuel)}
+              onMouseEnter={() => setActiveFuel(source.fuel)}
+              onMouseLeave={() => setActiveFuel(null)}
+              tabIndex={0}
             >
               <span className="source-name">
-                {t(`fuel.${source.fuel}`, { defaultValue: source.fuel })}
+                {translatedFuel}
                 {isCleanSource && <LeafIcon />}
               </span>
               <strong>{source.percentage}%</strong>

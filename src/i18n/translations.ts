@@ -28,8 +28,15 @@ export const resources = {
         today: 'Today',
         tomorrow: 'Tomorrow',
         dayAfterTomorrow: 'Day after tomorrow',
+        forecast: 'Forecast',
       },
       cleanEnergy: 'clean energy',
+      chart: {
+        dailyAriaLabel: 'Energy mix chart for {{date}}.',
+        chargingAriaLabel:
+          'Generation mix chart for the optimal charging window.',
+        empty: 'No generation mix data available.',
+      },
       charging: {
         eyebrow: 'EV charging',
         title: 'Find the cleanest charging window',
@@ -80,8 +87,15 @@ export const resources = {
         today: 'Dzisiaj',
         tomorrow: 'Jutro',
         dayAfterTomorrow: 'Pojutrze',
+        forecast: 'Prognoza',
       },
       cleanEnergy: 'czystej energii',
+      chart: {
+        dailyAriaLabel: 'Wykres miksu energetycznego dla {{date}}.',
+        chargingAriaLabel:
+          'Wykres miksu produkcji energii dla optymalnego okna ładowania.',
+        empty: 'Brak danych miksu produkcji energii.',
+      },
       charging: {
         eyebrow: 'Ładowanie EV',
         title: 'Znajdź najczystsze okno ładowania',

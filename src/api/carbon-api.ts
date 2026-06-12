@@ -1,31 +1,31 @@
 import type { DailyEnergyMix, OptimalChargingWindow } from '../types/energy-mix'
+import { requestJson, type ApiRequestOptions } from './api-client'
+import {
+  parseDailyEnergyMixResponse,
+  parseOptimalChargingWindowResponse,
+} from './energy-mix-validation'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? ''
+export { isAbortError } from './api-client'
 
-function buildApiUrl(path: string): string {
-  return `${API_BASE_URL}${path}`
-}
-
-export async function getDailyEnergyMix(): Promise<DailyEnergyMix[]> {
-  const response = await fetch(buildApiUrl('/api/carbon/daily-mix'))
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch daily energy mix.')
-  }
-
-  return response.json()
+export async function getDailyEnergyMix(
+  options?: ApiRequestOptions,
+): Promise<DailyEnergyMix[]> {
+  return requestJson(
+    '/api/carbon/daily-mix',
+    parseDailyEnergyMixResponse,
+    options,
+  )
 }
 
 export async function getOptimalChargingWindow(
   hours: number,
+  options?: ApiRequestOptions,
 ): Promise<OptimalChargingWindow> {
-  const response = await fetch(
-    buildApiUrl(`/api/carbon/optimal-charging-window?hours=${hours}`),
+  const searchParams = new URLSearchParams({ hours: String(hours) })
+
+  return requestJson(
+    `/api/carbon/optimal-charging-window?${searchParams.toString()}`,
+    parseOptimalChargingWindowResponse,
+    options,
   )
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch optimal charging window.')
-  }
-
-  return response.json()
 }

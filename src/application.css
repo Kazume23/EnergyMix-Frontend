@@ -291,6 +291,14 @@
   font-weight: 700;
 }
 
+.chart-empty {
+  min-height: 180px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
 .pie-sector {
   cursor: pointer;
   outline: none;
@@ -321,10 +329,16 @@
   align-items: center;
   padding: 9px 0;
   border-bottom: 1px dashed var(--border);
+  outline: none;
 }
 
 .source-list li:last-child {
   border-bottom: 0;
+}
+
+.source-list li:focus-visible {
+  border-radius: 4px;
+  box-shadow: 0 0 0 2px var(--accent);
 }
 
 .source-list span {

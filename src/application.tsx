@@ -1,17 +1,26 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { getDailyEnergyMix, getOptimalChargingWindow } from './api/carbon-api'
+import {
+  getDailyEnergyMix,
+  getOptimalChargingWindow,
+  isAbortError,
+} from './api/carbon-api'
 import { ChargingSection } from './components/charging-section'
 import { DailyMixGrid } from './components/daily-mix-grid'
 import { PageHeader } from './components/page-header'
 import { TaskRules } from './components/task-rules'
-import { languageStorageKey, themeStorageKey } from './constants/app-config'
+import {
+  maximumChargingHours,
+  minimumChargingHours,
+} from './constants/app-config'
 import type { DailyEnergyMix, OptimalChargingWindow } from './types/energy-mix'
 import type { ChargingWindowError, Theme } from './types/settings'
 import {
   getNextLanguage,
   getStoredTheme,
   getSupportedLanguage,
+  storeLanguage,
+  storeTheme,
 } from './utils/preferences'
 import './application.css'
 
@@ -30,29 +39,58 @@ function App() {
   const [isChargingWindowLoading, setIsChargingWindowLoading] = useState(false)
   const [chargingWindowError, setChargingWindowError] =
     useState<ChargingWindowError | null>(null)
+  const chargingRequestController = useRef<AbortController | null>(null)
 
   useEffect(() => {
+    const dailyMixController = new AbortController()
+    let shouldIgnoreResult = false
+
     async function loadDailyEnergyMix() {
       try {
-        const energyMix = await getDailyEnergyMix()
+        const energyMix = await getDailyEnergyMix({
+          signal: dailyMixController.signal,
+        })
+
+        if (shouldIgnoreResult) {
+          return
+        }
+
         setDailyEnergyMix(energyMix)
-      } catch {
+        setHasDailyMixError(false)
+      } catch (error) {
+        if (shouldIgnoreResult || isAbortError(error)) {
+          return
+        }
+
         setHasDailyMixError(true)
       } finally {
-        setIsDailyMixLoading(false)
+        if (!shouldIgnoreResult) {
+          setIsDailyMixLoading(false)
+        }
       }
     }
 
     loadDailyEnergyMix()
+
+    return () => {
+      shouldIgnoreResult = true
+      dailyMixController.abort()
+    }
   }, [])
 
   useEffect(() => {
-    localStorage.setItem(languageStorageKey, language)
+    storeLanguage(language)
   }, [language])
 
   useEffect(() => {
-    localStorage.setItem(themeStorageKey, theme)
+    storeTheme(theme)
   }, [theme])
+
+  useEffect(() => {
+    return () => {
+      chargingRequestController.current?.abort()
+    }
+  }, [])
 
   function handleChargingHoursChange(hours: number) {
     setChargingHours(hours)
@@ -70,23 +108,44 @@ function App() {
   async function handleChargingWindowSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    if (chargingHours < 1 || chargingHours > 6) {
+    if (
+      chargingHours < minimumChargingHours ||
+      chargingHours > maximumChargingHours
+    ) {
       setChargingWindowError('range')
       setChargingWindow(null)
       return
     }
 
+    chargingRequestController.current?.abort()
+    const requestController = new AbortController()
+    chargingRequestController.current = requestController
+
     try {
       setIsChargingWindowLoading(true)
       setChargingWindowError(null)
 
-      const optimalWindow = await getOptimalChargingWindow(chargingHours)
+      const optimalWindow = await getOptimalChargingWindow(chargingHours, {
+        signal: requestController.signal,
+      })
+
+      if (requestController.signal.aborted) {
+        return
+      }
+
       setChargingWindow(optimalWindow)
-    } catch {
+    } catch (error) {
+      if (requestController.signal.aborted || isAbortError(error)) {
+        return
+      }
+
       setChargingWindowError('request')
       setChargingWindow(null)
     } finally {
-      setIsChargingWindowLoading(false)
+      if (chargingRequestController.current === requestController) {
+        chargingRequestController.current = null
+        setIsChargingWindowLoading(false)
+      }
     }
   }
 

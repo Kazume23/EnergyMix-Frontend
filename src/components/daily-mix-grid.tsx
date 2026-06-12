@@ -7,20 +7,26 @@ const dayLabelKeys = [
   'dayLabels.tomorrow',
   'dayLabels.dayAfterTomorrow',
 ] as const
+const visibleDailyMixDays = dayLabelKeys.length
 
 type DailyMixGridProps = {
   dailyEnergyMix: DailyEnergyMix[]
 }
 
+function getDayLabelKey(dayIndex: number) {
+  return dayLabelKeys[dayIndex] ?? 'dayLabels.forecast'
+}
+
 export function DailyMixGrid({ dailyEnergyMix }: DailyMixGridProps) {
   const { t } = useTranslation()
+  const displayedDailyEnergyMix = dailyEnergyMix.slice(0, visibleDailyMixDays)
 
   return (
     <section className="daily-mix-grid">
-      {dailyEnergyMix.map((dayMix, dayIndex) => (
+      {displayedDailyEnergyMix.map((dayMix, dayIndex) => (
         <DailyMixCard
           cleanEnergyLabel={t('cleanEnergy')}
-          dayLabel={t(dayLabelKeys[dayIndex])}
+          dayLabel={t(getDayLabelKey(dayIndex))}
           dayMix={dayMix}
           key={dayMix.date}
         />

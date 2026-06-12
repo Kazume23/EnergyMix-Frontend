@@ -98,7 +98,11 @@ export function ChargingSection({
               <p className="result-chart-title">
                 {t('charging.optimalWindowMix')}
               </p>
-              <EnergyMixPieChart sources={chargingWindow.sources} />
+              <EnergyMixPieChart
+                ariaLabel={t('chart.chargingAriaLabel')}
+                emptyLabel={t('chart.empty')}
+                sources={chargingWindow.sources}
+              />
             </div>
           )}
         </div>

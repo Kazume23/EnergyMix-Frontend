@@ -1,6 +1,22 @@
 import { languageStorageKey, themeStorageKey } from '../constants/app-config'
 import type { Language, Theme } from '../types/settings'
 
+function getStorageItem(key: string) {
+  try {
+    return localStorage.getItem(key)
+  } catch {
+    return null
+  }
+}
+
+function setStorageItem(key: string, value: string) {
+  try {
+    localStorage.setItem(key, value)
+  } catch {
+    return
+  }
+}
+
 function isLanguage(value: string | null): value is Language {
   return value === 'en' || value === 'pl'
 }
@@ -10,7 +26,7 @@ function isTheme(value: string | null): value is Theme {
 }
 
 export function getStoredLanguage(): Language {
-  const storedLanguage = localStorage.getItem(languageStorageKey)
+  const storedLanguage = getStorageItem(languageStorageKey)
   return isLanguage(storedLanguage) ? storedLanguage : 'en'
 }
 
@@ -23,6 +39,14 @@ export function getNextLanguage(language: Language): Language {
 }
 
 export function getStoredTheme(): Theme {
-  const storedTheme = localStorage.getItem(themeStorageKey)
+  const storedTheme = getStorageItem(themeStorageKey)
   return isTheme(storedTheme) ? storedTheme : 'light'
+}
+
+export function storeLanguage(language: Language) {
+  setStorageItem(languageStorageKey, language)
+}
+
+export function storeTheme(theme: Theme) {
+  setStorageItem(themeStorageKey, theme)
 }

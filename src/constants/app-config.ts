@@ -1,6 +1,12 @@
 import type { Language } from '../types/settings'
 
-export const chargingDurationOptions = [1, 2, 3, 4, 5, 6]
+export const minimumChargingHours = 1
+
+export const maximumChargingHours = 6
+
+export const chargingDurationOptions = [1, 2, 3, 4, 5, 6] as const
+
+export const apiRequestTimeoutMs = 10_000
 
 export const cleanEnergySources = new Set([
   'biomass',
